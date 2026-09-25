@@ -1,128 +1,210 @@
 import 'package:flutter/material.dart';
 
-double processOrder({
-  required int orderId,
-  required double itemPrice,
-  String? promoCode,
-  double? deliveryFee,
-}) {
-  double price = itemPrice;
-  if (promoCode == "SAVE10") {
-    price = price * 0.9;
-  }
-  double delivery = deliveryFee ?? 500.0;
-  double finalTotal = price + delivery;
-  print('OrderId: $orderId');
-  print('ItemPrice: $itemPrice');
-  print('Promocode: $promoCode');
-  print('Delivery: $delivery');
-  print('FinalTotal: $finalTotal');
-  return finalTotal;
-}
-
 void main() {
-  double total = processOrder(
-    orderId: 1,
-    itemPrice: 10000.0,
-    promoCode: 'SAVE10',
-    deliveryFee: 690,
-  );
-
-  print('Total: $total');
+  runApp(const MyApp());
 }
-//   //1
-//   for (int i = 1; i <= 10; i++) {
-//     for (int j = 1; j <= 10; j++) {
-//       print('$i * $j = ${i * j}');
-//     }
-//   }
-//
-//   // Task 2
-//   int dayNumber = 31;
-//   int monthNumber = 15;
-//   int yearNumber = 2025;
-//   int daysInMonth;
-//   if (monthNumber == 2) {
-//     if (yearNumber % 400 == 0 ||
-//         (yearNumber % 4 == 0 && yearNumber % 100 != 0)) {
-//       daysInMonth = 29;
-//     } else {
-//       daysInMonth = 28;
-//     }
-//   } else if (monthNumber == 4 ||
-//       monthNumber == 6 ||
-//       monthNumber == 9 ||
-//       monthNumber == 11) {
-//     daysInMonth = 30;
-//   } else {
-//     daysInMonth = 31;
-//   }
-//   if (monthNumber < 1 ||
-//       monthNumber > 12 ||
-//       dayNumber < 1 ||
-//       dayNumber > daysInMonth) {
-//     print("invalid date");
-//   } else {
-//     dayNumber++;
-//
-//     if (dayNumber > daysInMonth) {
-//       dayNumber = 1;
-//       monthNumber++;
-//
-//       if (monthNumber > 12) {
-//         monthNumber = 1;
-//         yearNumber++;
-//       }
-//     }
-//
-//     print("$dayNumber.$monthNumber.$yearNumber");
-//   }
-//   // 3
-//   String word = 'flutter mobile development';
-//   int countVowels = 0;
-//   for (int i = 0; i < word.length; i++) {
-//     if (word[i] == 'a' ||
-//         word[i] == 'e' ||
-//         word[i] == 'i' ||
-//         word[i] == 'o' ||
-//         word[i] == 'u') {
-//       countVowels++;
-//     }
-//   }
-//   print('Count: $countVowels');
-//
-//
-// // 4
-//   List<int> numbers = [14, 88, 3, 42, 99, 12, 67];
-//   int min = numbers[0];
-//   int max = numbers[0];
-//   for (int i = 1; i < numbers.length; i++) {
-//     if (numbers[i] < min) {
-//       min = numbers[i];
-//     }
-//
-//     if (numbers[i] > max) {
-//       max = numbers[i];
-//     }
-//   }
-//   print('max: $max, min: $min');
-//
-//
-// // 5
-//   int number = 11;
-//   int count = 0;
-//   for (int i = 1; i <= number; i++) {
-//     if (number % i == 0) {
-//       count++;
-//     }
-//   }
-//   if (count == 2) {
-//     print('$number - prime number');
-//   } else {
-//     print('$number - not prime number');
-//   }
-// }
 
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Interactive Profile Card',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          brightness: Brightness.light,
+        ),
+        useMaterial3: true,
+      ),
+      home: const ProfileScreen(title: 'Interactive Profile Card'),
+    );
+  }
+}
 
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key, required this.title});
 
+  final String title;
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  static const int _initialFollowers = 1250;
+  static const int _initialLikes = 340;
+
+  bool _isFollowing = false;
+  bool _isLiked = false;
+  int _followerCount = _initialFollowers;
+  int _likeCount = _initialLikes;
+
+  void _toggleFollow() {
+    setState(() {
+      _isFollowing = !_isFollowing;
+      if (_isFollowing) {
+        _followerCount++;
+      } else {
+        _followerCount--;
+      }
+    });
+  }
+
+  void _toggleLike() {
+    setState(() {
+      _isLiked = !_isLiked;
+      if (_isLiked) {
+        _likeCount++;
+      } else {
+        _likeCount--;
+      }
+    });
+  }
+
+  void _resetState() {
+    setState(() {
+      _isFollowing = false;
+      _isLiked = false;
+      _followerCount = _initialFollowers;
+      _likeCount = _initialLikes;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        title: Text(widget.title),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        elevation: 2,
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
+          child: Card(
+            elevation: 6,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.deepPurple,
+                    child: Icon(Icons.person, size: 60, color: Colors.white),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Alex Developer',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Flutter & iOS Developer',
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildStatColumn('Posts', '42'),
+                      _buildDivider(),
+                      _buildStatColumn('Followers', '$_followerCount'),
+                      _buildDivider(),
+                      _buildStatColumn('Likes', '$_likeCount'),
+                    ],
+                  ),
+                  const SizedBox(height: 28),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: _toggleFollow,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _isFollowing
+                                ? Colors.grey[300]
+                                : Colors.deepPurple,
+                            foregroundColor: _isFollowing
+                                ? Colors.black87
+                                : Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          icon: Icon(
+                            _isFollowing
+                                ? Icons.check
+                                : Icons.person_add_outlined,
+                          ),
+                          label: Text(
+                            _isFollowing ? 'Following' : 'Follow',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      IconButton.filledTonal(
+                        onPressed: _toggleLike,
+                        style: IconButton.styleFrom(
+                          backgroundColor: _isLiked
+                              ? Colors.red[50]
+                              : Colors.grey[200],
+                          padding: const EdgeInsets.all(12),
+                        ),
+                        icon: Icon(
+                          _isLiked ? Icons.favorite : Icons.favorite_border,
+                          color: _isLiked ? Colors.red : Colors.grey[700],
+                        ),
+                        tooltip: 'Like',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  OutlinedButton.icon(
+                    onPressed: _resetState,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.redAccent,
+                      side: const BorderSide(color: Colors.redAccent),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      minimumSize: const Size.fromHeight(44),
+                    ),
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Reset Profile State'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatColumn(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 4),
+        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+      ],
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(height: 24, width: 1, color: Colors.grey[300]);
+  }
+}
